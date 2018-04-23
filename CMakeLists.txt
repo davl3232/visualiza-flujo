@@ -6,6 +6,6 @@ PROJECT(ReadOBJ)
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
  
-add_executable(ReadOBJ MACOSX_BUNDLE ReadOBJ.cxx )
+add_executable(ReadOBJ ReadOBJ.cxx )
  
 target_link_libraries(ReadOBJ ${VTK_LIBRARIES})
