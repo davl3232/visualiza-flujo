@@ -9,6 +9,10 @@
 /Users/davl3232/Documents/uni/cg/proyecto/visualiza-flujo/VectorField/VectorField.cxx
 limits
 -
+map
+-
+sstream
+-
 vector
 -
 vtkArrowSource.h
@@ -32,6 +36,8 @@ vtkInteractorStyleTrackballCamera.h
 vtkMultiBlockDataSet.h
 -
 vtkNamedColors.h
+-
+vtkOBJReader.h
 -
 vtkPerlinNoise.h
 -
@@ -62,6 +68,8 @@ vtkSmartPointer.h
 vtkStreamTracer.h
 -
 vtkTransform.h
+-
+vtkTransformFilter.h
 -
 vtkTransformPolyDataFilter.h
 -
@@ -111,6 +119,12 @@ vtkRenderingCoreModule.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderingCoreModule.h
 vtkObject.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkObject.h
+
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractPolyDataReader.h
+vtkIOCoreModule.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOCoreModule.h
+vtkPolyDataAlgorithm.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPolyDataAlgorithm.h
 
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractPropPicker.h
 vtkRenderingCoreModule.h
@@ -386,6 +400,12 @@ vtkCommonTransformsModule.h
 vtkAbstractTransform.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractTransform.h
 
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOCoreModule.h
+
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOGeometryModule.h
+vtkAutoInit.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAutoInit.h
+
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOStream.h
 vtkConfigure.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkConfigure.h
@@ -566,6 +586,12 @@ vtkStringArray.h
 vtkIOStream.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOStream.h
 
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkOBJReader.h
+vtkIOGeometryModule.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOGeometryModule.h
+vtkAbstractPolyDataReader.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractPolyDataReader.h
+
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkOStrStreamWrapper.h
 
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkOStreamWrapper.h
@@ -627,6 +653,12 @@ vtkDataSet.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkDataSet.h
 vtkPoints.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPoints.h
+
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPointSetAlgorithm.h
+vtkCommonExecutionModelModule.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCommonExecutionModelModule.h
+vtkAlgorithm.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAlgorithm.h
 
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPoints.h
 vtkCommonCoreModule.h
@@ -849,6 +881,12 @@ vtkLinearTransform.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkLinearTransform.h
 vtkMatrix4x4.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkMatrix4x4.h
+
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTransformFilter.h
+vtkFiltersGeneralModule.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkFiltersGeneralModule.h
+vtkPointSetAlgorithm.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPointSetAlgorithm.h
 
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTransformPolyDataFilter.h
 vtkFiltersGeneralModule.h

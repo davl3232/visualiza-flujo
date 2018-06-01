@@ -10,6 +10,7 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractMapper.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractMapper3D.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractPicker.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractPolyDataReader.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractPropPicker.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractTransform.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkActor.h
@@ -55,6 +56,8 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkGenericDataArrayLookupHelper.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkGlyph3D.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkHomogeneousTransform.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOCoreModule.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOGeometryModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOStream.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOStreamFwd.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOXMLModule.h
@@ -81,6 +84,7 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkMultiBlockDataSet.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkNamedColors.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkNew.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkOBJReader.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkOStrStreamWrapper.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkOStreamWrapper.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkObject.h
@@ -90,6 +94,7 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPlaneSource.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPointData.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPointSet.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPointSetAlgorithm.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPoints.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPolyData.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPolyDataAlgorithm.h
@@ -117,6 +122,7 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTexture.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTimeStamp.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTransform.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTransformFilter.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTransformPolyDataFilter.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTuple.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkType.h

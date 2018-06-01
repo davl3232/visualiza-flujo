@@ -1,4 +1,6 @@
 #include <limits>
+#include <map>
+#include <sstream>
 #include <vector>
 
 #include <vtkArrowSource.h>
@@ -12,6 +14,7 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkMultiBlockDataSet.h>
 #include <vtkNamedColors.h>
+#include <vtkOBJReader.h>
 #include <vtkPerlinNoise.h>
 #include <vtkPlaneSource.h>
 #include <vtkPointData.h>
@@ -27,10 +30,15 @@
 #include <vtkSmartPointer.h>
 #include <vtkStreamTracer.h>
 #include <vtkTransform.h>
+#include <vtkTransformFilter.h>
 #include <vtkTransformPolyDataFilter.h>
 #include <vtkVersion.h>
 #include <vtkXMLPolyDataWriter.h>
 
+std::map<vtkSmartPointer<vtkActor>, std::string> mapaActores;
+
+bool objEnEscena = true;
+vtkSmartPointer<vtkActor> actorObj;
 bool vectoresEnEscena = true;
 std::vector<vtkSmartPointer<vtkActor>> vectores;
 bool curvasEnEscena = true;
@@ -57,13 +65,27 @@ public:
     // picker->Pick( clickPos[0], clickPos[1], 0,
     // this->GetInteractor()->GetRenderWindow()->GetRenderers()->GetFirstRenderer()
     // );
-    picker->PickProp(clickPos[0], clickPos[1],
-                     this->GetInteractor()
-                         ->GetRenderWindow()
-                         ->GetRenderers()
-                         ->GetFirstRenderer());
+    picker->Pick(clickPos[0], clickPos[1], 0,
+                 this->GetInteractor()
+                     ->GetRenderWindow()
+                     ->GetRenderers()
+                     ->GetFirstRenderer());
     // picker->Pick( 500, 400, 0, renderer );
-    std::cout << "Picked actor static: " << picker->GetViewProp() << std::endl;
+    // std::cout << "Picked actor static: " << picker->GetActor() << std::endl;
+    vtkSmartPointer<vtkActor> seleccionado = picker->GetActor();
+    if (seleccionado != 0 &&
+        mapaActores.find(seleccionado) != mapaActores.end()) {
+      std::cout << std::endl;
+      std::cout << std::endl;
+      std::cout << "====================================================="
+                << std::endl;
+      std::cout << "Vector: " << std::endl;
+      std::cout << "-----------------------------------------------------"
+                << std::endl;
+      std::cout << mapaActores[picker->GetActor()];
+      std::cout << "====================================================="
+                << std::endl;
+    }
     vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
   }
   virtual void OnKeyPress() override {
@@ -72,7 +94,7 @@ public:
     std::string key = rwi->GetKeySym();
 
     // Handle a "normal" key
-    if (key == "1") {
+    if (key == "z") {
       if (vectoresEnEscena) {
         for (size_t i = 0; i < vectores.size(); i++) {
           vectores[i]->GetProperty()->SetOpacity(0.1);
@@ -83,14 +105,20 @@ public:
         }
       }
       vectoresEnEscena = !vectoresEnEscena;
-      rwi->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->Render();
-    } else if (key == "2") {
+    } else if (key == "x") {
       if (curvasEnEscena) {
         streamLineActor->GetProperty()->SetOpacity(0.1);
       } else {
         streamLineActor->GetProperty()->SetOpacity(1.0);
       }
       curvasEnEscena = !curvasEnEscena;
+    } else if (key == "c") {
+      if (objEnEscena) {
+        actorObj->GetProperty()->SetOpacity(0.1);
+      } else {
+        actorObj->GetProperty()->SetOpacity(1.0);
+      }
+      objEnEscena = !objEnEscena;
     }
 
     rwi->Render();
@@ -240,10 +268,10 @@ vtkSmartPointer<vtkImageData> readImage(std::string filename,
           pixel[2] = genZ->EvaluateFunction(x, y, z);
         }
 
-        for (size_t i = 0; i < 3; i++) {
-          std::cout << "\t" << pixel[i];
-        }
-        std::cout << std::endl;
+        // for (size_t i = 0; i < 3; i++) {
+        //   std::cout << "\t" << pixel[i];
+        // }
+        // std::cout << std::endl;
       }
     }
   }
@@ -251,15 +279,53 @@ vtkSmartPointer<vtkImageData> readImage(std::string filename,
 }
 
 int main(int argc, char *argv[]) {
-  double bounds[3][2] = {{-0.5, 0.5}, {-0.5, 0.5}, {-0.5, 0.5}};
-  if (argc == 7) {
+  double bounds[3][2] = {{1, 8}, {0, 4}, {1, 7}};
+  std::string obj;
+  if (argc == 8) {
+    obj = argv[1];
     for (size_t i = 0; i < 3; i++) {
-      std::cout << 2 * i + 1 << ": " << atof(argv[2 * i + 1]) << std::endl;
-      std::cout << 2 * i + 2 << ": " << atof(argv[2 * i + 2]) << std::endl;
-      bounds[i][0] = atof(argv[2 * i + 1]);
-      bounds[i][1] = atof(argv[2 * i + 2]);
+      bounds[i][0] = atof(argv[2 * i + 2]);
+      bounds[i][1] = atof(argv[2 * i + 3]);
+      std::cout << 2 * i + 2 << ": " << bounds[i][0] << std::endl;
+      std::cout << 2 * i + 3 << ": " << bounds[i][1] << std::endl;
     }
+  } else if (argc == 2) {
+    obj = argv[1];
+    for (size_t i = 0; i < 3; i++) {
+      std::cout << 2 * i + 2 << ": " << bounds[i][0] << std::endl;
+      std::cout << 2 * i + 3 << ": " << bounds[i][1] << std::endl;
+    }
+  } else {
+    std::cout << "Error. Usage " << argv[0] << " <obj Filename>" << std::endl;
+    return -1;
   }
+
+  // ReadOBJ
+  vtkSmartPointer<vtkOBJReader> readerObj =
+      vtkSmartPointer<vtkOBJReader>::New();
+  readerObj->SetFileName(obj.c_str());
+  readerObj->Update();
+
+  vtkSmartPointer<vtkTransform> transformObj =
+      vtkSmartPointer<vtkTransform>::New();
+  transformObj->Identity();
+  transformObj->Translate(3, -1, 4);
+  transformObj->RotateY(12);
+  transformObj->RotateX(-90);
+  transformObj->Scale(0.03, 0.03, 0.03);
+
+  vtkSmartPointer<vtkTransformFilter> filterObj =
+      vtkSmartPointer<vtkTransformFilter>::New();
+  filterObj->SetInputConnection(readerObj->GetOutputPort());
+  filterObj->SetTransform(transformObj);
+
+  vtkSmartPointer<vtkPolyDataMapper> mapperObj =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
+  mapperObj->SetInputConnection(filterObj->GetOutputPort());
+
+  actorObj = vtkSmartPointer<vtkActor>::New();
+  actorObj->SetMapper(mapperObj);
+  // Fin ReadOBJ
 
   // Create an image
   vtkSmartPointer<vtkImageData> image = readImage("", bounds);
@@ -357,12 +423,18 @@ int main(int argc, char *argv[]) {
             double(y) + pixel[1], double(z) + pixel[2], minNorm, maxNorm);
         vectores.push_back(actor);
         renderer->AddActor(actor);
+        std::stringstream ss;
+        ss << "Origen: " << x << ", " << y << ", " << z << std::endl;
+        ss << "Direccion: " << pixel[0] << ", " << pixel[1] << ", " << pixel[2]
+           << std::endl;
+        mapaActores[actor] = ss.str();
       }
     }
   }
   renderer->AddActor(streamLineActor);
   renderer->AddActor(planeActor);
   renderer->AddActor(axes);
+  renderer->AddActor(actorObj);
   renderer->ResetCamera();
 
   // Setup render window
