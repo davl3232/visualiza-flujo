@@ -29,6 +29,10 @@
 #include <vtkXMLPolyDataWriter.h>
 #include <vtkOBJReader.h>
 #include <vtkTransformFilter.h>
+#include <sstream>
+#include <map>
+
+std::map < vtkSmartPointer<vtkActor>, std::string > mapaActores;
 
 bool isInBounds(const double point[3], const double bounds[3][2]) {
   for (size_t i = 0; i < 3; i++)
@@ -51,13 +55,18 @@ public:
     // picker->Pick( clickPos[0], clickPos[1], 0,
     // this->GetInteractor()->GetRenderWindow()->GetRenderers()->GetFirstRenderer()
     // );
-    picker->PickProp(clickPos[0], clickPos[1],
+    picker->Pick(clickPos[0], clickPos[1], 0,
                      this->GetInteractor()
                          ->GetRenderWindow()
                          ->GetRenderers()
                          ->GetFirstRenderer());
     // picker->Pick( 500, 400, 0, renderer );
-    std::cout << "Picked actor static: " << picker->GetViewProp() << std::endl;
+    //std::cout << "Picked actor static: " << picker->GetActor() << std::endl;
+    vtkSmartPointer<vtkActor> seleccionado = picker->GetActor( );
+    if ( seleccionado != 0 && mapaActores.find(seleccionado) != mapaActores.end() )
+    {
+      std::cout << "Vector: " << mapaActores[picker->GetActor()] << std::endl;
+    }
     vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
   }
 };
@@ -347,6 +356,10 @@ int main(int argc, char *argv[]) {
         vtkSmartPointer<vtkActor> actor =
             actorVector(double(x), double(y), double(z), double(x) + pixel[0],
                         double(y) + pixel[1], double(z) + pixel[2]);
+        std::stringstream ss;
+        ss << "Inicio: " << x << ", " << y << ", " << z << ".\n";
+        ss << "Direccion: " << pixel[0] << ", " << pixel[1] << ", " << pixel[2];
+        mapaActores[actor] = ss.str();
         renderer->AddActor(actor);
       }
     }
