@@ -7,11 +7,17 @@
 #IncludeRegexTransform: 
 
 /Users/davl3232/Documents/uni/cg/proyecto/visualiza-flujo/VectorField/VectorField.cxx
+limits
+-
+vector
+-
 vtkArrowSource.h
 -
 vtkAxesActor.h
 -
 vtkCellArray.h
+-
+vtkColorTransferFunction.h
 -
 vtkGlyph3D.h
 -
@@ -241,6 +247,12 @@ vtkTuple.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTuple.h
 vtkObject.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkObject.h
+
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkColorTransferFunction.h
+vtkRenderingCoreModule.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderingCoreModule.h
+vtkScalarsToColors.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkScalarsToColors.h
 
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCommand.h
 vtkCommonCoreModule.h
@@ -727,6 +739,14 @@ vtkFiltersCoreModule.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkFiltersCoreModule.h
 vtkAutoInit.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAutoInit.h
+
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkScalarsToColors.h
+vtkCommonCoreModule.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCommonCoreModule.h
+vtkVariant.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkVariant.h
+vtkObject.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkObject.h
 
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkSetGet.h
 vtkCommonCoreModule.h

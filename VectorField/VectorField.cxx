@@ -1,3 +1,6 @@
+#include <limits>
+#include <vector>
+
 #include <vtkArrowSource.h>
 #include <vtkAxesActor.h>
 #include <vtkCellArray.h>
@@ -27,6 +30,11 @@
 #include <vtkTransformPolyDataFilter.h>
 #include <vtkVersion.h>
 #include <vtkXMLPolyDataWriter.h>
+
+bool vectoresEnEscena = true;
+std::vector<vtkSmartPointer<vtkActor>> vectores;
+bool curvasEnEscena = true;
+vtkSmartPointer<vtkActor> streamLineActor;
 
 bool isInBounds(const double point[3], const double bounds[3][2]) {
   for (size_t i = 0; i < 3; i++)
@@ -58,21 +66,52 @@ public:
     std::cout << "Picked actor static: " << picker->GetViewProp() << std::endl;
     vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
   }
+  virtual void OnKeyPress() override {
+    // Get the keypress
+    vtkRenderWindowInteractor *rwi = this->Interactor;
+    std::string key = rwi->GetKeySym();
+
+    // Handle a "normal" key
+    if (key == "1") {
+      if (vectoresEnEscena) {
+        for (size_t i = 0; i < vectores.size(); i++) {
+          vectores[i]->GetProperty()->SetOpacity(0.1);
+        }
+      } else {
+        for (size_t i = 0; i < vectores.size(); i++) {
+          vectores[i]->GetProperty()->SetOpacity(1.0);
+        }
+      }
+      vectoresEnEscena = !vectoresEnEscena;
+      rwi->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->Render();
+    } else if (key == "2") {
+      if (curvasEnEscena) {
+        streamLineActor->GetProperty()->SetOpacity(0.1);
+      } else {
+        streamLineActor->GetProperty()->SetOpacity(1.0);
+      }
+      curvasEnEscena = !curvasEnEscena;
+    }
+
+    rwi->Render();
+
+    // Forward events
+    // vtkInteractorStyleTrackballCamera::OnKeyPress();
+  }
 };
 vtkStandardNewMacro(KeyPressInteractorStyle);
 
 vtkSmartPointer<vtkActor> actorVector(double x1, double y1, double z1,
-                                      double x2, double y2, double z2) {
+                                      double x2, double y2, double z2,
+                                      double minNorm, double maxNorm) {
   vtkSmartPointer<vtkArrowSource> arrowSource =
       vtkSmartPointer<vtkArrowSource>::New();
+  arrowSource->SetTipResolution(20);
+  arrowSource->SetShaftResolution(10);
 
   // Generate a random start and end point
   double startPoint[3], endPoint[3];
-#ifndef main
   vtkMath::RandomSeed(time(NULL));
-#else
-  vtkMath::RandomSeed(8775070);
-#endif
   startPoint[0] = x1;
   startPoint[1] = y1;
   startPoint[2] = z1;
@@ -127,20 +166,37 @@ vtkSmartPointer<vtkActor> actorVector(double x1, double y1, double z1,
   vtkSmartPointer<vtkPolyDataMapper> mapper =
       vtkSmartPointer<vtkPolyDataMapper>::New();
   vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-#ifdef USER_MATRIX
-  mapper->SetInputConnection(arrowSource->GetOutputPort());
-  actor->SetUserMatrix(transform->GetMatrix());
-#else
   mapper->SetInputConnection(transformPD->GetOutputPort());
-#endif
   mapper->Update();
   mapper->StaticOn();
   actor->SetMapper(mapper);
   double offset[3] = {1, 1, 1};
   double color[3] = {1, 1, 1};
   // vtkMath::Add(normalizedX, offset, color);
-  vtkMath::MultiplyScalar(normalizedX, length);
-  actor->GetProperty()->SetColor(normalizedX);
+  vtkNew<vtkColorTransferFunction> colorTransferFunction;
+  colorTransferFunction->AddRGBPoint(0, 0, 0, 0);
+  colorTransferFunction->AddRGBPoint(0.1111111111111111, 0.2718098958333333, 0,
+                                     0);
+  colorTransferFunction->AddRGBPoint(0.2222222222222222, 0.44694010416666674, 0,
+                                     0);
+  colorTransferFunction->AddRGBPoint(0.3333333333333333, 0.6357421875, 0, 0);
+  colorTransferFunction->AddRGBPoint(0.4444444444444444, 0.8352864583333335, 0,
+                                     0);
+  colorTransferFunction->AddRGBPoint(0.5555555555555556, 1, 0.19222005208333343,
+                                     0);
+  colorTransferFunction->AddRGBPoint(0.6666666666666666, 1, 0.49414062500000006,
+                                     0);
+  colorTransferFunction->AddRGBPoint(0.7777777777777778, 1, 0.6953125000000003,
+                                     0);
+  colorTransferFunction->AddRGBPoint(0.8888888888888888, 1, 0.8736979166666667,
+                                     0);
+  colorTransferFunction->AddRGBPoint(1, 1, 1, 1);
+  colorTransferFunction->Build();
+  double l = (length - minNorm) / (maxNorm - minNorm);
+  colorTransferFunction->GetColor(l, color);
+  actor->GetProperty()->SetColor(color);
+  actor->GetProperty()->SetAmbientColor(color);
+  actor->GetProperty()->SetAmbient(0.2);
   return actor;
 }
 
@@ -152,24 +208,18 @@ vtkSmartPointer<vtkImageData> readImage(std::string filename,
   // Specify the size of the image data
   image->SetDimensions(10, 10, 10);
 
-#if VTK_MAJOR_VERSION <= 5
-  image->SetNumberOfScalarComponents(3);
-  image->SetScalarTypeToFloat();
-  image->AllocateScalars();
-#else
   image->AllocateScalars(VTK_FLOAT, 3);
-#endif
 
   int *dims = image->GetDimensions();
 
   vtkSmartPointer<vtkPerlinNoise> genX = vtkSmartPointer<vtkPerlinNoise>::New();
-  genX->SetFrequency(1.0, 2.0, 1.0);
+  genX->SetFrequency(2.0, 2.0, 1.0);
   genX->SetAmplitude(1.0);
   vtkSmartPointer<vtkPerlinNoise> genY = vtkSmartPointer<vtkPerlinNoise>::New();
-  genY->SetFrequency(2.0, 1.0, 1.0);
+  genY->SetFrequency(1.0, 2.0, 2.0);
   genY->SetAmplitude(1.0);
   vtkSmartPointer<vtkPerlinNoise> genZ = vtkSmartPointer<vtkPerlinNoise>::New();
-  genZ->SetFrequency(1.0, 1.0, 2.0);
+  genZ->SetFrequency(2.0, 1.0, 2.0);
   genZ->SetAmplitude(1.0);
 
   for (auto z = 0; z < dims[2]; ++z) {
@@ -213,6 +263,23 @@ int main(int argc, char *argv[]) {
 
   // Create an image
   vtkSmartPointer<vtkImageData> image = readImage("", bounds);
+  double minNorm = std::numeric_limits<double>::infinity();
+  double maxNorm = -std::numeric_limits<double>::infinity();
+  int *dims = image->GetDimensions();
+  for (auto z = 0; z < dims[2]; ++z) {
+    for (auto y = 0; y < dims[1]; ++y) {
+      for (auto x = 0; x < dims[0]; ++x) {
+        float *pixel = static_cast<float *>(image->GetScalarPointer(x, y, z));
+        double norm = vtkMath::Norm(pixel);
+        if (norm > maxNorm) {
+          maxNorm = norm;
+        }
+        if (norm < minNorm) {
+          minNorm = norm;
+        }
+      }
+    }
+  }
 
   // A better way to do this is (should be tested for compatibility and
   // correctness).
@@ -236,8 +303,8 @@ int main(int argc, char *argv[]) {
   // Source of the streamlines
   vtkSmartPointer<vtkPlaneSource> seeds =
       vtkSmartPointer<vtkPlaneSource>::New();
-  seeds->SetXResolution(10);
-  seeds->SetYResolution(10);
+  seeds->SetXResolution(100);
+  seeds->SetYResolution(100);
   seeds->SetOrigin(0, 0, 0);
   seeds->SetPoint1(0, 0, 9);
   seeds->SetPoint2(0, 9, 0);
@@ -258,7 +325,8 @@ int main(int argc, char *argv[]) {
       vtkSmartPointer<vtkStreamTracer>::New();
   streamLine->SetInputData(dataSets);
   streamLine->SetSourceConnection(seeds->GetOutputPort());
-  streamLine->SetMaximumPropagation(100);
+  streamLine->SetMaximumPropagation(1000);
+  streamLine->SetMaximumNumberOfSteps(1000);
   streamLine->SetInitialIntegrationStep(0.1);
   streamLine->SetIntegrationDirectionToBoth();
 
@@ -271,7 +339,7 @@ int main(int argc, char *argv[]) {
       vtkSmartPointer<vtkPolyDataMapper>::New();
   streamLineMapper->SetInputConnection(streamLine->GetOutputPort());
 
-  vtkSmartPointer<vtkActor> streamLineActor = vtkSmartPointer<vtkActor>::New();
+  streamLineActor = vtkSmartPointer<vtkActor>::New();
   streamLineActor->SetMapper(streamLineMapper);
   streamLineActor->VisibilityOn();
 
@@ -280,14 +348,14 @@ int main(int argc, char *argv[]) {
 
   // Setup renderer
   vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
-  int *dims = image->GetDimensions();
   for (auto z = 0; z < dims[2]; ++z) {
     for (auto y = 0; y < dims[1]; ++y) {
       for (auto x = 0; x < dims[0]; ++x) {
         float *pixel = static_cast<float *>(image->GetScalarPointer(x, y, z));
-        vtkSmartPointer<vtkActor> actor =
-            actorVector(double(x), double(y), double(z), double(x) + pixel[0],
-                        double(y) + pixel[1], double(z) + pixel[2]);
+        vtkSmartPointer<vtkActor> actor = actorVector(
+            double(x), double(y), double(z), double(x) + pixel[0],
+            double(y) + pixel[1], double(z) + pixel[2], minNorm, maxNorm);
+        vectores.push_back(actor);
         renderer->AddActor(actor);
       }
     }

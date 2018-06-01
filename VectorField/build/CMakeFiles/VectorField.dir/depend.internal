@@ -29,6 +29,7 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCellTypes.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCollection.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkColor.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkColorTransferFunction.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCommand.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCommonColorModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCommonCoreModule.h
@@ -104,6 +105,7 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRendererCollection.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderingAnnotationModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderingCoreModule.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkScalarsToColors.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkSetGet.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkSmartPointer.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkSmartPointerBase.h
