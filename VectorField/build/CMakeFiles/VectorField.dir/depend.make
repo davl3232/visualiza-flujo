@@ -96,6 +96,7 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o: /usr/local/Cellar/vtk/8.1.0_1/incl
 CMakeFiles/VectorField.dir/VectorField.cxx.o: /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkProp3D.h
 CMakeFiles/VectorField.dir/VectorField.cxx.o: /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPropCollection.h
 CMakeFiles/VectorField.dir/VectorField.cxx.o: /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPropPicker.h
+CMakeFiles/VectorField.dir/VectorField.cxx.o: /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkProperty.h
 CMakeFiles/VectorField.dir/VectorField.cxx.o: /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderWindow.h
 CMakeFiles/VectorField.dir/VectorField.cxx.o: /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderWindowInteractor.h
 CMakeFiles/VectorField.dir/VectorField.cxx.o: /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderer.h

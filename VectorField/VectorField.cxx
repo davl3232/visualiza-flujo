@@ -1,6 +1,7 @@
 #include <vtkArrowSource.h>
 #include <vtkAxesActor.h>
 #include <vtkCellArray.h>
+#include <vtkColorTransferFunction.h>
 #include <vtkGlyph3D.h>
 #include <vtkImageData.h>
 #include <vtkImageSlice.h>
@@ -15,6 +16,7 @@
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPropPicker.h>
+#include <vtkProperty.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
@@ -40,7 +42,7 @@ public:
   static KeyPressInteractorStyle *New();
   vtkTypeMacro(KeyPressInteractorStyle, vtkInteractorStyleTrackballCamera);
 
-  virtual void OnLeftButtonDown() {
+  virtual void OnLeftButtonDown() override {
     int *clickPos = this->GetInteractor()->GetEventPosition();
     vtkSmartPointer<vtkPropPicker> picker =
         vtkSmartPointer<vtkPropPicker>::New();
@@ -54,7 +56,7 @@ public:
                          ->GetFirstRenderer());
     // picker->Pick( 500, 400, 0, renderer );
     std::cout << "Picked actor static: " << picker->GetViewProp() << std::endl;
-    vtkInteractorStyleTrackballCamera::OnKeyPress();
+    vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
   }
 };
 vtkStandardNewMacro(KeyPressInteractorStyle);
@@ -131,7 +133,14 @@ vtkSmartPointer<vtkActor> actorVector(double x1, double y1, double z1,
 #else
   mapper->SetInputConnection(transformPD->GetOutputPort());
 #endif
+  mapper->Update();
+  mapper->StaticOn();
   actor->SetMapper(mapper);
+  double offset[3] = {1, 1, 1};
+  double color[3] = {1, 1, 1};
+  // vtkMath::Add(normalizedX, offset, color);
+  vtkMath::MultiplyScalar(normalizedX, length);
+  actor->GetProperty()->SetColor(normalizedX);
   return actor;
 }
 
@@ -217,38 +226,6 @@ int main(int argc, char *argv[]) {
   arrowSource->SetShaftRadius(0.025);
   arrowSource->Update();
 
-  vtkSmartPointer<vtkGlyph3D> glyphFilter = vtkSmartPointer<vtkGlyph3D>::New();
-  glyphFilter->SetSourceConnection(arrowSource->GetOutputPort());
-  // glyphFilter->OrientOn();
-  glyphFilter->SetScaleModeToScaleByVector();
-  glyphFilter->ScalingOn();
-  glyphFilter->OrientOn();
-#if VTK_MAJOR_VERSION <= 5
-  glyphFilter->SetInputConnection(image->GetProducerPort());
-#else
-  glyphFilter->SetInputData(image);
-#endif
-  glyphFilter->Update();
-
-  // Create actors
-  //   vtkSmartPointer<vtkImageSliceMapper> imageMapper =
-  //       vtkSmartPointer<vtkImageSliceMapper>::New();
-  // #if VTK_MAJOR_VERSION <= 5
-  //   imageMapper->SetInputConnection(image->GetProducerPort());
-  // #else
-  //   imageMapper->SetInputData(image);
-  // #endif
-
-  // vtkSmartPointer<vtkImageSlice> imageSlice =
-  //     vtkSmartPointer<vtkImageSlice>::New();
-  // imageSlice->SetMapper(imageMapper);
-
-  vtkSmartPointer<vtkPolyDataMapper> vectorMapper =
-      vtkSmartPointer<vtkPolyDataMapper>::New();
-  vectorMapper->SetInputConnection(glyphFilter->GetOutputPort());
-  vtkSmartPointer<vtkActor> vectorActor = vtkSmartPointer<vtkActor>::New();
-  vectorActor->SetMapper(vectorMapper);
-
   vtkNew<vtkMultiBlockDataSet> dataSets;
   dataSets->SetNumberOfBlocks(1);
   dataSets->SetBlock(0, image);
@@ -262,13 +239,19 @@ int main(int argc, char *argv[]) {
   seeds->SetXResolution(10);
   seeds->SetYResolution(10);
   seeds->SetOrigin(0, 0, 0);
-  seeds->SetPoint1(1, 1, 9);
-  seeds->SetPoint2(1, 9, 1);
+  seeds->SetPoint1(0, 0, 9);
+  seeds->SetPoint2(0, 9, 0);
   vtkSmartPointer<vtkPolyDataMapper> planeMapper =
       vtkSmartPointer<vtkPolyDataMapper>::New();
   planeMapper->SetInputConnection(seeds->GetOutputPort());
   vtkSmartPointer<vtkActor> planeActor = vtkSmartPointer<vtkActor>::New();
   planeActor->SetMapper(planeMapper);
+  planeActor->GetProperty()->SetRepresentationToWireframe();
+  planeActor->GetProperty()->SetColor(1, 1, 1);
+  planeActor->GetProperty()->SetSpecular(0.0);
+  planeActor->GetProperty()->SetDiffuse(0.0);
+  planeActor->GetProperty()->SetAmbientColor(1, 1, 1);
+  planeActor->GetProperty()->SetAmbient(1.0);
 
   // Streamline itself
   vtkSmartPointer<vtkStreamTracer> streamLine =
@@ -297,8 +280,18 @@ int main(int argc, char *argv[]) {
 
   // Setup renderer
   vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
-  // renderer->AddViewProp(imageSlice);
-  renderer->AddViewProp(vectorActor);
+  int *dims = image->GetDimensions();
+  for (auto z = 0; z < dims[2]; ++z) {
+    for (auto y = 0; y < dims[1]; ++y) {
+      for (auto x = 0; x < dims[0]; ++x) {
+        float *pixel = static_cast<float *>(image->GetScalarPointer(x, y, z));
+        vtkSmartPointer<vtkActor> actor =
+            actorVector(double(x), double(y), double(z), double(x) + pixel[0],
+                        double(y) + pixel[1], double(z) + pixel[2]);
+        renderer->AddActor(actor);
+      }
+    }
+  }
   renderer->AddActor(streamLineActor);
   renderer->AddActor(planeActor);
   renderer->AddActor(axes);

@@ -41,6 +41,8 @@ vtkPolyDataMapper.h
 -
 vtkPropPicker.h
 -
+vtkProperty.h
+-
 vtkRenderWindow.h
 -
 vtkRenderWindowInteractor.h
@@ -675,6 +677,12 @@ vtkRenderingCoreModule.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderingCoreModule.h
 vtkAbstractPropPicker.h
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractPropPicker.h
+
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkProperty.h
+vtkRenderingCoreModule.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderingCoreModule.h
+vtkObject.h
+/usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkObject.h
 
 /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderWindow.h
 vtkRenderingCoreModule.h
