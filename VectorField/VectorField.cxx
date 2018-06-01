@@ -21,6 +21,119 @@
 #include <vtkStreamTracer.h>
 #include <vtkVersion.h>
 #include <vtkXMLPolyDataWriter.h>
+#include <vtkPropPicker.h>
+#include <vtkRendererCollection.h>
+#include <vtkTransform.h>
+#include <vtkTransformPolyDataFilter.h>
+
+
+
+/***********************************************
+***********************************************/
+class KeyPressInteractorStyle : public vtkInteractorStyleTrackballCamera
+{
+  public:
+    static KeyPressInteractorStyle* New();
+    vtkTypeMacro(KeyPressInteractorStyle, vtkInteractorStyleTrackballCamera);
+
+	virtual void OnLeftButtonDown()
+  {
+    	int* clickPos = this->GetInteractor()->GetEventPosition();
+		vtkSmartPointer <vtkPropPicker> picker =
+			vtkSmartPointer <vtkPropPicker>::New( );
+		//picker->Pick( clickPos[0], clickPos[1], 0, this->GetInteractor()->GetRenderWindow()->GetRenderers()->GetFirstRenderer() );
+    picker->PickProp( clickPos[0], clickPos[1], this->GetInteractor()->GetRenderWindow()->GetRenderers()->GetFirstRenderer() );
+		//picker->Pick( 500, 400, 0, renderer );
+		std::cout << "Picked actor static: " << picker->GetViewProp() << std::endl;
+    vtkInteractorStyleTrackballCamera::OnKeyPress();
+	}
+
+};
+vtkStandardNewMacro(KeyPressInteractorStyle);
+
+vtkSmartPointer <vtkActor> actorVector (double x1, double y1, double z1, double x2, double y2, double z2)
+{
+  vtkSmartPointer<vtkArrowSource> arrowSource =
+    vtkSmartPointer<vtkArrowSource>::New();
+
+  // Generate a random start and end point
+  double startPoint[3], endPoint[3];
+#ifndef main
+  vtkMath::RandomSeed(time(NULL));
+#else
+  vtkMath::RandomSeed(8775070);
+#endif
+  startPoint[0] = x1;
+  startPoint[1] = y1;
+  startPoint[2] = z1;
+  endPoint[0] = x2;
+  endPoint[1] = y2;
+  endPoint[2] = z2;
+
+  // Compute a basis
+  double normalizedX[3];
+  double normalizedY[3];
+  double normalizedZ[3];
+
+  // The X axis is a vector from start to end
+  vtkMath::Subtract(endPoint, startPoint, normalizedX);
+  double length = vtkMath::Norm(normalizedX);
+  vtkMath::Normalize(normalizedX);
+
+  // The Z axis is an arbitrary vector cross X
+  double arbitrary[3];
+  arbitrary[0] = vtkMath::Random(-10,10);
+  arbitrary[1] = vtkMath::Random(-10,10);
+  arbitrary[2] = vtkMath::Random(-10,10);
+  vtkMath::Cross(normalizedX, arbitrary, normalizedZ);
+  vtkMath::Normalize(normalizedZ);
+
+  // The Y axis is Z cross X
+  vtkMath::Cross(normalizedZ, normalizedX, normalizedY);
+  vtkSmartPointer<vtkMatrix4x4> matrix =
+    vtkSmartPointer<vtkMatrix4x4>::New();
+
+  // Create the direction cosine matrix
+  matrix->Identity();
+  for (unsigned int i = 0; i < 3; i++)
+  {
+    matrix->SetElement(i, 0, normalizedX[i]);
+    matrix->SetElement(i, 1, normalizedY[i]);
+    matrix->SetElement(i, 2, normalizedZ[i]);
+  }
+
+  // Apply the transforms
+  vtkSmartPointer<vtkTransform> transform =
+    vtkSmartPointer<vtkTransform>::New();
+  transform->Translate(startPoint);
+  transform->Concatenate(matrix);
+  transform->Scale(length, length, length);
+
+  // Transform the polydata
+  vtkSmartPointer<vtkTransformPolyDataFilter> transformPD =
+    vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+  transformPD->SetTransform(transform);
+  transformPD->SetInputConnection(arrowSource->GetOutputPort());
+
+  //Create a mapper and actor for the arrow
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+  vtkSmartPointer<vtkActor> actor =
+    vtkSmartPointer<vtkActor>::New();
+#ifdef USER_MATRIX
+  mapper->SetInputConnection(arrowSource->GetOutputPort());
+  actor->SetUserMatrix(transform->GetMatrix());
+#else
+  mapper->SetInputConnection(transformPD->GetOutputPort());
+#endif
+  actor->SetMapper(mapper);
+  return actor;
+}
+
+
+
+
+
 
 vtkSmartPointer<vtkImageData> readImage(std::string filename) {
   // Create an image
@@ -178,8 +291,9 @@ int main(int, char *[]) {
   // Setup render window interactor
   vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
       vtkSmartPointer<vtkRenderWindowInteractor>::New();
-  vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
-      vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+  vtkSmartPointer<KeyPressInteractorStyle> style =
+      vtkSmartPointer<KeyPressInteractorStyle>::New();
+
   renderWindowInteractor->SetInteractorStyle(style);
   renderWindow->SetSize(1000, 1000);
   // Render and start interaction
