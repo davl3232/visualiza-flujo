@@ -9,6 +9,9 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractCellLinks.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractMapper.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractMapper3D.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractPicker.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractPropPicker.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAbstractTransform.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkActor.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkActorCollection.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkAlgorithm.h
@@ -32,6 +35,7 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCommonDataModelModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCommonExecutionModelModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCommonMathModule.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCommonTransformsModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkCompositeDataSet.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkConfigure.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkDataArray.h
@@ -43,11 +47,13 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkFieldData.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkFiltersCoreModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkFiltersFlowPathsModule.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkFiltersGeneralModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkFiltersSourcesModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkGenericDataArray.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkGenericDataArray.txx
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkGenericDataArrayLookupHelper.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkGlyph3D.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkHomogeneousTransform.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOStream.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOStreamFwd.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkIOXMLModule.h
@@ -66,9 +72,11 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkInteractorObserver.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkInteractorStyle.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkInteractorStyleTrackballCamera.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkLinearTransform.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkMapper.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkMath.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkMathConfigure.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkMatrix4x4.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkMultiBlockDataSet.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkNamedColors.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkNew.h
@@ -88,9 +96,11 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkProp.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkProp3D.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPropCollection.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkPropPicker.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderWindow.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderWindowInteractor.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderer.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRendererCollection.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderingAnnotationModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkRenderingCoreModule.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkSetGet.h
@@ -103,6 +113,8 @@ CMakeFiles/VectorField.dir/VectorField.cxx.o
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkSystemIncludes.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTexture.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTimeStamp.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTransform.h
+ /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTransformPolyDataFilter.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTuple.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkType.h
  /usr/local/Cellar/vtk/8.1.0_1/include/vtk-8.1/vtkTypeTraits.h
