@@ -27,6 +27,8 @@
 #include <vtkTransformPolyDataFilter.h>
 #include <vtkVersion.h>
 #include <vtkXMLPolyDataWriter.h>
+#include <vtkOBJReader.h>
+#include <vtkTransformFilter.h>
 
 bool isInBounds(const double point[3], const double bounds[3][2]) {
   for (size_t i = 0; i < 3; i++)
@@ -202,14 +204,71 @@ vtkSmartPointer<vtkImageData> readImage(std::string filename,
 
 int main(int argc, char *argv[]) {
   double bounds[3][2] = {{-0.5, 0.5}, {-0.5, 0.5}, {-0.5, 0.5}};
-  if (argc == 7) {
+  std::string obj;
+  std::string imagen;
+  if (argc >= 9) {
     for (size_t i = 0; i < 3; i++) {
-      std::cout << 2 * i + 1 << ": " << atof(argv[2 * i + 1]) << std::endl;
-      std::cout << 2 * i + 2 << ": " << atof(argv[2 * i + 2]) << std::endl;
-      bounds[i][0] = atof(argv[2 * i + 1]);
-      bounds[i][1] = atof(argv[2 * i + 2]);
+      std::cout << 2 * i + 3 << ": " << atof(argv[2 * i + 3]) << std::endl;
+      std::cout << 2 * i + 4 << ": " << atof(argv[2 * i + 4]) << std::endl;
+      bounds[i][0] = atof(argv[2 * i + 3]);
+      bounds[i][1] = atof(argv[2 * i + 4]);
     }
+  } else if (argc >= 3) {
+    obj = argv[1];
+    imagen = argv[2];
+  } else {
+    std::cout << "Error. Usage " << argv[0] << " <obj Filename> <Imagen>" << std::endl;
+    return -1;
   }
+
+  //ReadOBJ
+  vtkSmartPointer<vtkOBJReader> readerObj =
+    vtkSmartPointer<vtkOBJReader>::New();
+  readerObj->SetFileName(obj.c_str());
+  readerObj->Update();
+
+  vtkSmartPointer<vtkMatrix4x4> matrizObj =
+    vtkSmartPointer<vtkMatrix4x4>::New ( );
+  matrizObj->Identity( );
+  matrizObj->SetElement( 0, 0, 0.025 );
+  matrizObj->SetElement( 1, 1, 0.025 );
+  matrizObj->SetElement( 2, 2, 0.025 );
+
+  vtkSmartPointer<vtkMatrix4x4> matrizObjRotar =
+    vtkSmartPointer<vtkMatrix4x4>::New ( );
+  matrizObjRotar->Identity( );
+  matrizObjRotar->SetElement( 1, 1, 0 );
+  matrizObjRotar->SetElement( 2, 2, 0 );
+  matrizObjRotar->SetElement( 1, 2, 1 );
+  matrizObjRotar->SetElement( 2, 1, -1 );
+
+  vtkSmartPointer<vtkMatrix4x4> matrizObjMover =
+    vtkSmartPointer<vtkMatrix4x4>::New ( );
+  matrizObjMover->Identity( );
+  matrizObjMover->SetElement( 0, 3, 3.0 );
+  matrizObjMover->SetElement( 1, 3, 3.5 );
+  matrizObjMover->SetElement( 2, 3, 3.5 );
+
+  vtkSmartPointer<vtkTransform> transformObj =
+    vtkSmartPointer<vtkTransform>::New ( );
+  transformObj->Identity();
+  transformObj->Concatenate( matrizObjMover );
+  transformObj->Concatenate( matrizObj );
+  transformObj->Concatenate( matrizObjRotar );
+
+  vtkSmartPointer<vtkTransformFilter> filterObj =
+    vtkSmartPointer<vtkTransformFilter>::New( );
+  filterObj->SetInputConnection( readerObj->GetOutputPort( ) );
+  filterObj->SetTransform( transformObj );
+
+  vtkSmartPointer<vtkPolyDataMapper> mapperObj =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+  mapperObj->SetInputConnection(filterObj->GetOutputPort());
+
+  vtkSmartPointer<vtkActor> actorObj =
+    vtkSmartPointer<vtkActor>::New();
+  actorObj->SetMapper(mapperObj);
+  //Fin ReadOBJ
 
   // Create an image
   vtkSmartPointer<vtkImageData> image = readImage("", bounds);
@@ -295,6 +354,7 @@ int main(int argc, char *argv[]) {
   renderer->AddActor(streamLineActor);
   renderer->AddActor(planeActor);
   renderer->AddActor(axes);
+  renderer->AddActor(actorObj);
   renderer->ResetCamera();
 
   // Setup render window
