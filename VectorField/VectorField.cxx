@@ -21,8 +21,15 @@
 #include <vtkStreamTracer.h>
 #include <vtkVersion.h>
 #include <vtkXMLPolyDataWriter.h>
+bool isInBounds(const double point[3], const double bounds[3][2]) {
+  for (size_t i = 0; i < 3; i++)
+    if (!(bounds[i][0] < point[i] && point[i] < bounds[i][1]))
+      return false;
+  return true;
+}
 
-vtkSmartPointer<vtkImageData> readImage(std::string filename) {
+vtkSmartPointer<vtkImageData> readImage(std::string filename,
+                                        const double bounds[3][2]) {
   // Create an image
   vtkSmartPointer<vtkImageData> image = vtkSmartPointer<vtkImageData>::New();
 
@@ -53,9 +60,19 @@ vtkSmartPointer<vtkImageData> readImage(std::string filename) {
     for (auto y = 0; y < dims[1]; ++y) {
       for (auto x = 0; x < dims[0]; ++x) {
         float *pixel = static_cast<float *>(image->GetScalarPointer(x, y, z));
-        pixel[0] = genX->EvaluateFunction(x, y, z);
-        pixel[1] = genY->EvaluateFunction(x, y, z);
-        pixel[2] = genZ->EvaluateFunction(x, y, z);
+        double point[3];
+        point[0] = double(x);
+        point[1] = double(y);
+        point[2] = double(z);
+        if (isInBounds(point, bounds)) {
+          pixel[0] = 0;
+          pixel[1] = 0;
+          pixel[2] = 0;
+        } else {
+          pixel[0] = genX->EvaluateFunction(x, y, z);
+          pixel[1] = genY->EvaluateFunction(x, y, z);
+          pixel[2] = genZ->EvaluateFunction(x, y, z);
+        }
 
         for (size_t i = 0; i < 3; i++) {
           std::cout << "\t" << pixel[i];
@@ -67,9 +84,19 @@ vtkSmartPointer<vtkImageData> readImage(std::string filename) {
   return image;
 }
 
-int main(int, char *[]) {
+int main(int argc, char *argv[]) {
+  double bounds[3][2] = {{-0.5, 0.5}, {-0.5, 0.5}, {-0.5, 0.5}};
+  if (argc == 7) {
+    for (size_t i = 0; i < 3; i++) {
+      std::cout << 2 * i + 1 << ": " << atof(argv[2 * i + 1]) << std::endl;
+      std::cout << 2 * i + 2 << ": " << atof(argv[2 * i + 2]) << std::endl;
+      bounds[i][0] = atof(argv[2 * i + 1]);
+      bounds[i][1] = atof(argv[2 * i + 2]);
+    }
+  }
+
   // Create an image
-  vtkSmartPointer<vtkImageData> image = readImage("");
+  vtkSmartPointer<vtkImageData> image = readImage("", bounds);
 
   // A better way to do this is (should be tested for compatibility and
   // correctness).
@@ -127,7 +154,7 @@ int main(int, char *[]) {
       vtkSmartPointer<vtkPlaneSource>::New();
   seeds->SetXResolution(10);
   seeds->SetYResolution(10);
-  seeds->SetOrigin(1, 1, 1);
+  seeds->SetOrigin(0, 0, 0);
   seeds->SetPoint1(1, 1, 9);
   seeds->SetPoint2(1, 9, 1);
   vtkSmartPointer<vtkPolyDataMapper> planeMapper =
